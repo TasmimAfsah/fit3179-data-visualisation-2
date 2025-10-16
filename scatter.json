@@ -1,0 +1,33 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 800,
+  "height": 450,
+  "data": {
+    "url": "temps_forest_2020_clean.csv",
+    "format": { "type": "csv" }
+  },
+  "mark": { "type": "circle", "opacity": 0.7, "size": 100 },
+  "encoding": {
+    "x": {
+      "field": "AvgTemp",
+      "type": "quantitative",
+      "title": "Average Temperature (°C)"
+    },
+    "y": {
+      "field": "PropForest_2020",
+      "type": "quantitative",
+      "title": "Forest Proportion (%)"
+    },
+    "color": {
+      "field": "PropForest_2020",
+      "type": "quantitative",
+      "scale": { "scheme": "purples" },
+      "title": "Forest %"
+    },
+    "tooltip": [
+      { "field": "Entity", "type": "nominal", "title": "Country" },
+      { "field": "AvgTemp", "type": "quantitative", "title": "Temperature (°C)", "format": ".2f" },
+      { "field": "PropForest_2020", "type": "quantitative", "title": "Forest %", "format": ".1f" }
+    ]
+  }
+}

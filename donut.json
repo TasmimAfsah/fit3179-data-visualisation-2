@@ -1,0 +1,32 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 800,
+  "height": 450,
+  "data": {
+    "url": "temps_forest_2020_clean.csv",
+    "format": { "type": "csv" }
+  },
+  "transform": [
+    {
+      "calculate": "if(datum['Total Forest Area Affected by Fire, 2015'] == 0, 'No Fire Impact', if(datum['Total Forest Area Affected by Fire, 2015'] < 100, 'Low Impact', if(datum['Total Forest Area Affected by Fire, 2015'] < 1000, 'Medium Impact', 'High Impact')))",
+      "as": "FireCategory"
+    }
+  ],
+  "mark": { "type": "arc", "innerRadius": 50 },
+  "encoding": {
+    "theta": {
+      "aggregate": "count",
+      "type": "quantitative"
+    },
+    "color": {
+      "field": "FireCategory",
+      "type": "nominal",
+      "scale": { "scheme": "set2" },
+      "title": "Fire Impact Level"
+    },
+    "tooltip": [
+      { "field": "FireCategory", "type": "nominal", "title": "Impact Level" },
+      { "aggregate": "count", "type": "quantitative", "title": "Number of Countries" }
+    ]
+  }
+}

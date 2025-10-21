@@ -6,24 +6,241 @@
     "url": "forest_averages.csv",
     "format": { "type": "csv" }
   },
-  "mark": { "type": "line", "strokeWidth": 3, "color": "#6c757d" },
-  "encoding": {
-    "x": {
-      "field": "Year",
-      "type": "quantitative",
-      "title": "Year",
-      "scale": {"zero": false},
-      "axis": {"format": "d"}
+  "vconcat": [
+    {
+      "width": 800,
+      "height": 50,
+      "mark": {
+        "type": "area",
+        "stroke": "#6c757d",
+        "strokeWidth": 1,
+        "fill": "#6c757d",
+        "opacity": 0.3
+      },
+      "encoding": {
+        "x": {
+          "field": "Year",
+          "type": "quantitative",
+          "scale": {"zero": false},
+          "axis": {"format": "d"}
+        },
+        "y": {
+          "field": "ForestArea",
+          "type": "quantitative",
+          "scale": {"zero": false}
+        }
+      },
+      "params": [
+        {
+          "name": "forest_brush",
+          "select": {
+            "type": "interval",
+            "encodings": ["x"]
+          }
+        },
+        {
+          "name": "reset",
+          "value": true,
+          "bind": {
+            "input": "checkbox",
+            "name": "Reset View"
+          }
+        }
+      ]
     },
-    "y": {
-      "field": "ForestArea",
-      "type": "quantitative",
-      "title": "Average Forest Area (1000 km²)",
-      "scale": {"zero": false}
-    },
-    "tooltip": [
-      { "field": "Year", "type": "quantitative", "title": "Year" },
-      { "field": "ForestArea", "type": "quantitative", "title": "Avg Forest Area", "format": ".0f" }
-    ]
-  }
+    {
+      "width": 800,
+      "height": 400,
+      "layer": [
+        {
+          "mark": { 
+            "type": "line", 
+            "strokeWidth": 4, 
+            "color": "#6c757d",
+            "point": {
+              "filled": true,
+              "fill": "#6c757d",
+              "size": 100
+            }
+          },
+          "encoding": {
+            "x": {
+              "field": "Year",
+              "type": "quantitative",
+              "title": "Year",
+              "scale": {
+                "domain": {"param": "forest_brush", "encoding": "x"},
+                "zero": false
+              },
+              "axis": {"format": "d", "tickCount": 10}
+            },
+            "y": {
+              "field": "ForestArea",
+              "type": "quantitative",
+              "title": "Average Forest Area (1000 km²)",
+              "scale": {"zero": false}
+            },
+            "tooltip": [
+              { "field": "Year", "type": "quantitative", "title": "Year", "format": "d" },
+              { "field": "ForestArea", "type": "quantitative", "title": "Avg Forest Area (1000 km²)", "format": ".2f" }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "point",
+            "filled": true,
+            "size": 150,
+            "color": "#dc3545"
+          },
+          "encoding": {
+            "x": {
+              "field": "Year",
+              "type": "quantitative",
+              "scale": {
+                "domain": {"param": "forest_brush", "encoding": "x"},
+                "zero": false
+              }
+            },
+            "y": {
+              "field": "ForestArea",
+              "type": "quantitative",
+              "scale": {"zero": false}
+            },
+            "opacity": {
+              "condition": {
+                "test": "datum.Year == 1990 || datum.Year == 2000 || datum.Year == 2020",
+                "value": 1
+              },
+              "value": 0
+            },
+            "tooltip": [
+              { "field": "Year", "type": "quantitative", "title": "Year", "format": "d" },
+              { "field": "ForestArea", "type": "quantitative", "title": "Avg Forest Area (1000 km²)", "format": ".2f" }
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 10,
+            "dy": -10,
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "#dc3545"
+          },
+          "encoding": {
+            "x": {
+              "field": "Year",
+              "type": "quantitative",
+              "scale": {
+                "domain": {"param": "forest_brush", "encoding": "x"},
+                "zero": false
+              }
+            },
+            "y": {
+              "field": "ForestArea",
+              "type": "quantitative",
+              "scale": {"zero": false}
+            },
+            "text": {
+              "condition": {
+                "test": "datum.Year == 1990",
+                "value": "Start: 1990"
+              },
+              "value": ""
+            },
+            "opacity": {
+              "condition": {
+                "test": "datum.Year == 1990",
+                "value": 1
+              },
+              "value": 0
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "center",
+            "dx": 0,
+            "dy": -15,
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "#dc3545"
+          },
+          "encoding": {
+            "x": {
+              "field": "Year",
+              "type": "quantitative",
+              "scale": {
+                "domain": {"param": "forest_brush", "encoding": "x"},
+                "zero": false
+              }
+            },
+            "y": {
+              "field": "ForestArea",
+              "type": "quantitative",
+              "scale": {"zero": false}
+            },
+            "text": {
+              "condition": {
+                "test": "datum.Year == 2000",
+                "value": "Rapid decline"
+              },
+              "value": ""
+            },
+            "opacity": {
+              "condition": {
+                "test": "datum.Year == 2000",
+                "value": 1
+              },
+              "value": 0
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -10,
+            "dy": -10,
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "#dc3545"
+          },
+          "encoding": {
+            "x": {
+              "field": "Year",
+              "type": "quantitative",
+              "scale": {
+                "domain": {"param": "forest_brush", "encoding": "x"},
+                "zero": false
+              }
+            },
+            "y": {
+              "field": "ForestArea",
+              "type": "quantitative",
+              "scale": {"zero": false}
+            },
+            "text": {
+              "condition": {
+                "test": "datum.Year == 2020",
+                "value": "2020: Current"
+              },
+              "value": ""
+            },
+            "opacity": {
+              "condition": {
+                "test": "datum.Year == 2020",
+                "value": 1
+              },
+              "value": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
 }

@@ -8,25 +8,80 @@
   },
   "transform": [
     {
-      "calculate": "if(datum['Total Forest Area Affected by Fire, 2015'] == 0, 'No Fire Impact', if(datum['Total Forest Area Affected by Fire, 2015'] < 100, 'Low Impact', if(datum['Total Forest Area Affected by Fire, 2015'] < 1000, 'Medium Impact', 'High Impact')))",
+      "calculate": "datum['Total Forest Area Affected by Fire, 2015'] == 0 ? 'No Fire Impact' : (datum['Total Forest Area Affected by Fire, 2015'] < 100 ? 'Low Impact' : (datum['Total Forest Area Affected by Fire, 2015'] < 1000 ? 'Medium Impact' : 'High Impact'))",
       "as": "FireCategory"
-    }
+    },
+    {
+      "aggregate": [{ "op": "count", "as": "count" }],
+      "groupby": ["FireCategory"]
+    },
+    {
+      "window": [{ "op": "sum", "field": "count", "as": "TotalCount" }],
+      "frame": [null, null]
+    },
+    { "calculate": "datum.count / datum.TotalCount", "as": "pct" },
+    { "calculate": "format(datum.pct, '.0%')", "as": "percentageLabel" }
   ],
-  "mark": { "type": "arc", "innerRadius": 50 },
-  "encoding": {
-    "theta": {
-      "aggregate": "count",
-      "type": "quantitative"
+  "layer": [
+    {
+      "mark": {
+        "type": "arc",
+        "innerRadius": 80,
+        "outerRadius": 150,
+        "stroke": "#ffffff",
+        "strokeWidth": 2
+      },
+      "encoding": {
+        "theta": { "field": "count", "type": "quantitative", "stack": true },
+        "color": {
+          "field": "FireCategory",
+          "type": "nominal",
+          "title": "Fire Impact Level",
+          "scale": { "scheme": "set2" },
+          "legend": {
+            "orient": "bottom",
+            "direction": "horizontal",
+            "titleFontSize": 14,
+            "labelFontSize": 12
+          }
+        },
+        "order": { "field": "FireCategory" },
+        "opacity": {
+          "condition": { "param": "hover", "value": 1 },
+          "value": 0.9
+        },
+        "tooltip": [
+          { "field": "FireCategory", "type": "nominal", "title": "Impact Level" },
+          { "field": "count", "type": "quantitative", "title": "Number of Countries" },
+          { "field": "pct", "type": "quantitative", "title": "Percentage", "format": ".1%" }
+        ]
+      },
+      "params": [
+        {
+          "name": "hover",
+          "select": { "type": "point", "on": "mouseover", "clear": "mouseout" }
+        }
+      ]
     },
-    "color": {
-      "field": "FireCategory",
-      "type": "nominal",
-      "scale": { "scheme": "set2" },
-      "title": "Fire Impact Level"
-    },
-    "tooltip": [
-      { "field": "FireCategory", "type": "nominal", "title": "Impact Level" },
-      { "aggregate": "count", "type": "quantitative", "title": "Number of Countries" }
-    ]
-  }
+    {
+      "mark": {
+        "type": "text",
+        "radius": 115,
+        "fontSize": 14,
+        "fontWeight": "bold",
+        "align": "center",
+        "baseline": "middle",
+        "fill": "black",
+        "stroke": null,
+        "strokeWidth": 0
+      },
+      "encoding": {
+        "theta": { "field": "count", "type": "quantitative", "stack": true },
+        "color": { "field": "FireCategory", "type": "nominal", "legend": null },
+        "order": { "field": "FireCategory" },
+        "text": { "field": "percentageLabel" }
+      }
+    }
+    
+  ]
 }
